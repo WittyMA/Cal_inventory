@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Application Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+       
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            display: inline-block;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #007BFF;
+            color: white;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 2px;
+            cursor: pointer;
+        }
+        .delete-btn {
+            background: white;
+            border: none;
+        }
+        .edit-btn {
+            background:white;            
+            border: none;
+        }
+        
+            /* Base styles for the table */
+           #applicationsTable {
+               width: 100%;
+               border-collapse: collapse;
+           }
+
+           /* Table header styles */
+           #applicationsTable th {
+               background-color: #007BFF;
+               color: white;
+               padding: 10px;
+               text-align: left;
+               font-size: 1.2rem; /* Default font size */
+           }
+
+           /* Table body styles */
+           #applicationsTable td {
+               padding: 8px;
+               border-bottom: 1px solid #ddd;
+               font-size: 0.95rem; /* Default font size */
+           }
+
+           /* Responsive text sizes */
+           @media screen and (max-width: 1200px) {
+               #applicationsTable th, #applicationsTable td {
+                   font-size: 1.01rem; /* Slightly smaller for medium screens */
+               }
+           }
+
+           @media screen and (max-width: 992px) {
+               #applicationsTable th, #applicationsTable td {
+                   font-size: 0.95rem;
+               }
+           }
+
+           @media screen and (max-width: 768px) {
+               #applicationsTable th, #applicationsTable td {
+                   font-size: 0.86rem; /* Smaller for tablets */
+               }
+           }
+
+           @media screen and (max-width: 576px) {
+               #applicationsTable th, #applicationsTable td {
+                   font-size: 0.8rem; /* Even smaller for phones */
+               }
+           }
+
+           /* Make the text larger as the screen size increases */
+           @media screen and (min-width: 1400px) {
+               #applicationsTable th, #applicationsTable td {
+                   font-size: 1.3rem;
+               }
+           }
+
+           @media screen and (min-width: 1600px) {
+               #applicationsTable th, #applicationsTable td {
+                   font-size: 1.55rem;
+               }
+           }
+
+        .image-container {
+          background-color: #F4F4F4; /* Background color for the image */
+            display: inline-block; /* So it wraps around the image size */
+            padding: 10px; /* Optional padding */
+        }
+
+        .image-container img {
+            display: block; /* Avoid inline spacing issues */
+            height: 10vh;
+            width: 15vw;
+        }
+        
+        .chart-container {
+                    margin: auto;
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    justify-content: space-around;
+                    gap: 10px;
+                    padding-top: 10px;
+                    padding: 20px;
+                    
+        }
+        .chart-box {
+            align-content: center;
+            background: white;
+            width: 48%; /* Adjust width for horizontal layout */
+            max-width: 65vw;
+            height: 55vh; /* Set a fixed height */
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+     </<script src="dublic.js"> </script>
+<div class="image-container">
+    <img src="img/cal_log2.png" alt="CalBank Logo">
+</div>
+    <h2>Application Management</h2>
+
+    <form action="ApplicationServlet" method="POST">
+        <input type="text" id="app_name" name="app_name" placeholder="App Name" required>
+        <input type="text" id="version_number" name="version_number" placeholder="Version No" required>
+        <input type="text" id="vendor" name="vendor" placeholder="Vendor" required>
+        <input type="date" id="deployment_date" name="deployment_date" required>
+        <input type="text" id="owner" name="owner" placeholder="Owner" required>
+        <input type="text" id="database_type" name="database_type" placeholder="DB Type" required>
+        <input type="text" id="operating_system" name="operating_system" placeholder="Operating Sys" required>
+        <select id="hosting_environment" name="hosting_environment">
+           <option value="ON_PREMISE">ON_PREMISE</option>
+           <option value="CLOUD">CLOUD</option>
+           <option value="HYBRID">HYBRID</option>
+        </select>
+        <input type="text" id="purpose" name="purpose" placeholder="App Purpose" required>
+        <select id="critical_rating" name="critical_rating">
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="LOW">LOW</option>
+            <option value="CRITICAL">CRITICAL</option>
+        </select>
+        <input type="number" id="user_base" name="user_base" placeholder="User Base" required>
+        <input type="text" id="integrated_apps" name="integrated_apps" placeholder="Integrated Apps">
+        <input type="text" id="authentication_method" name="authentication_method" placeholder="Auth Method" required>
+        <input type="text" id="data_types" name="data_types" placeholder="Data Types" required>
+        <input type="text" id="transaction_volume" name="transaction_volume" placeholder="Transaction Volume">
+        <input type="text" id="users" name="users" placeholder="Users Name">
+        <button type="submit">Add Application</button>
+    </form>
+    <hr><!-- Horizontal between the add form and the export button -->
+    <!-- Export Button -->
+    <button id="exportBtn">Export to</button> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="form">Form</button>
+
+<!-- Dropdown Menu -->
+<div id="exportOptions" style="display: none; position: absolute; background: white; border: 1px solid #ccc; padding: 10px;">
+    <button onclick="exportData('excel')">Export to Excel</button>
+    <button onclick="exportData('csv')">Export to CSV</button>
+</div>
+
+<script>
+    document.querySelectorAll("#applicationsTable tbody tr").forEach(row => {
+    row.querySelectorAll("td").forEach((cell, index) => {
+        const headerText = document.querySelector(`#applicationsTable thead tr th:nth-child(${index + 1})`).innerText;
+        cell.setAttribute("data-label", headerText);
+    });
+});
+
+    // Show/Hide Export Options
+    document.getElementById("exportBtn").addEventListener("click", function (event) {
+        let dropdown = document.getElementById("exportOptions");
+        dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+
+        // Position the dropdown near the button
+        dropdown.style.left = (event.pageX + 0) + "px";
+        dropdown.style.top = (event.pageY + 0) + "px";
+    });
+    
+        document.getElementById("form").addEventListener("click", function (event) {
+             window.location.href = "index.html";
+        });
+        
+    // Export function
+    function exportData(type) {
+        if (type === 'excel') {
+            window.location.href = "http://localhost:8090/MisSoftwareMgt_p1-1.0/ExportExcelServlet";
+        } else if (type === 'csv') {
+            window.location.href = "http://localhost:8090/MisSoftwareMgt_p1-1.0/ExportCSVServlet";
+        }
+        document.getElementById("exportOptions").style.display = "none"; // Hide menu after selection
+    }
+
+    // Hide dropdown if clicked outside
+    document.addEventListener("click", function (event) {
+        let dropdown = document.getElementById("exportOptions");
+        if (event.target.id !== "exportBtn" && !dropdown.contains(event.target)) {
+            dropdown.style.display = "none";
+        }
+    });
+</script>
+<br><br>
+<div class="table-responsive">
+    <table id="applicationsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>App Name</th>
+                <th>Version No</th>
+                <th>Vendor</th>
+                <th>Deployment Date</th>
+                <th>Owner</th>
+                <th>Database Type</th>
+                <th>Operating System</th>
+                <th>Hosting Env</th>
+                <th>Purpose</th>
+                <th>Critical Rating</th>
+                <th>User Base</th>
+                <th>Integrated Apps</th>
+                <th>Auth Method</th>
+                <th>Data Types</th>
+                <th>Transaction Volume</th>
+                <th>Users</th>
+                <th>Date Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+   
+     <h1>Application Management Visualizations</h1>
+    <div class="chart-container">
+        <div class="chart-box">
+            <canvas id="deploymentChart"></canvas>
+        </div>
+        <div class="chart-box">
+            <canvas id="ratingChart"></canvas>
+        </div>
+        <!-- Chart Container -->
+        <div class="chart-box">
+            <canvas id="environmentChart"></canvas>
+        </div>
+        <div class="chart-box">
+            <canvas id="appChartOne"></canvas>
+        </div>
+        <div class="chart-box">
+            <canvas id="appChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+       const apiBaseUrl = "api/Applications";
+       
+    function editApplication(appId) {
+        if(confirm("Edit Application ID: " + appId + "?")) {
+        window.location.href = `edit.html?id=${appId}`;
+    }
+    }
+
+    function deleteApplication(appId) {
+    if (confirm("Are you sure you want to delete this application?")) {
+        fetch(`ApplicationServlet?id=${appId}`, {
+            method: "DELETE"
+        })
+        .then(response => response.text())
+        .then(data => {
+            alert(data); // Show response from the server
+            location.reload(); // Refresh the page after deletion
+        })
+        .catch(error => console.error("Error:", error));
+    }
+}
+
+// MouseOver function for edit button
+
+        // MouseOver function for delete button
+ 
+async function fetchApplications() {
+    try {
+        const response = await fetch(apiBaseUrl);
+        if (!response.ok) {
+            throw new Error("Failed to fetch applications.");
+        }
+        
+        const data = await response.json();
+        
+        const tableBody = document.querySelector("#applicationsTable tbody");
+        tableBody.innerHTML = ""; 
+
+        data.forEach(app => {
+            const row = `
+                <tr>
+                    <td>${app.id}</td>
+                    <td>${app.appName}</td>
+                    <td>${app.versionNumber}</td>
+                    <td>${app.vendor}</td>
+                    <td>${app.deploymentDateFormatted}</td>
+                    <td>${app.owner}</td>
+                    <td>${app.databaseType}</td>
+                    <td>${app.operatingSystem}</td>
+                    <td>${app.hostingEnvironment}</td>
+                    <td>${app.purpose}</td>
+                    <td>${app.criticalRating}</td>
+                    <td>${app.userBase}</td>
+                    <td>${app.integratedApps}</td>
+                    <td>${app.authenticationMethod}</td>
+                    <td>${app.dataTypes}</td>
+                    <td>${app.transactionVolume}</td>
+                    <td>${app.users}</td>
+                    <td>${app.createdAtFormatted}</td>
+                    <td>
+                        <button class="edit-btn" onclick="editApplication(${app.id})">
+                            <i class="fas fa-pen-to-square" style="font-size:20px; color:orange;"></i>
+                        </button>
+                        <button class="delete-btn" onclick="deleteApplication(${app.id})">
+                        <i class="fas fa-trash" style="font-size:20px;color:red;"></i>
+                        </button>
+                    </td>
+                </tr>`;
+            tableBody.insertAdjacentHTML("beforeend", row);
+        });
+        // Prepare data for Deployment Date chart
+        const appNames = data.map(app => app.appName);
+        const deploymentDates = data.map(app => app.deploymentDateFormatted);
+
+        // Prepare data for Critical Rating and Hosting Environment chart
+        const criticalRatings = data.map(app => app.criticalRating);
+        const hostingEnvironments = data.map(app => app.hostingEnvironment);
+
+          // Prepare data for the chart of UserBase
+            const chartLabels = data.map(app => app.appName);
+            const chartData = data.map(app => parseInt(app.userBase) || 0);
+
+            // Prepare data for the chart of Authenticatinn Methods
+            const authenticationMethod = data.map(app => parseInt(app.authenticationMethod) || 0);
+            
+            // PolarArea
+            const authMethdCounts = data.reduce((counts, app) => {
+            counts[app.authenticationMethod] = (counts[app.authenticationMethod] || 0) + 1;
+            return counts;
+          }, {});
+          const authMethdLabels = Object.keys(authMethdCounts);
+          const authMethdData = Object.values(authMethdCounts);
+
+            const ctx = document.getElementById('appChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels:authMethdLabels,
+                    datasets: [{
+                        label: 'Number of Applications',
+                        data: authMethdData,
+                        backgroundColor: [
+                            'rgba(241, 140, 32, 0.6)',
+                            'rgba(54, 162, 235, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(241, 140, 32, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                            
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Prepare data for the chart
+            const chartLabelsOne = data.map(app => app.appName);
+            const chartDataOne = data.map(app => parseInt(app.userBase) || 0);
+
+            // Render Chart
+
+            const ctx1 = document.getElementById('appChartOne').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'User Base',
+                        data: chartData,
+                        backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(255, 159, 64, 0.2)',
+                                'rgba(255, 205, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(201, 203, 207, 0.2)'
+                              ],
+                    borderColor:  [
+                                'rgb(255, 99, 132)',
+                                'rgb(255, 159, 64)',
+                                'rgb(255, 205, 86)',
+                                'rgb(75, 192, 192)',
+                                'rgb(54, 162, 235)',
+                                'rgb(153, 102, 255)',
+                                'rgb(201, 203, 207)'
+                                  ],
+                        borderWidth: 1,
+                        legend: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            
+    // 1. Prepare data for the Deployment Date Chart:
+    // Convert date strings (yyyy-MM-dd) to timestamps (number of milliseconds)
+    const appNamesT = data.map(app => app.appName);
+    const deploymentTimestamps = data.map(app => new Date(app.deploymentDateFormatted).getTime());
+
+    // Chart 1: Deployment Date Chart (line chart)
+    new Chart(document.getElementById('deploymentChart').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: appNamesT, // X-axis labels (application names)
+        datasets: [{
+          label: 'Deployment Date',
+          data: deploymentTimestamps, // Numeric timestamps for Y values
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            type: 'linear',
+            beginAtZero: false,
+            ticks: {
+              // Format the numeric timestamps into human-readable dates
+              callback: function(value) {
+                const date = new Date(value);
+                return date.toLocaleDateString();
+              }
+            }
+          }
+        }
+      }
+    });
+
+    // 2. Prepare data for the Critical Rating Chart:
+    // Count how many applications are in each critical rating category.
+    const ratingCounts = data.reduce((counts, app) => {
+      counts[app.criticalRating] = (counts[app.criticalRating] || 0) + 1;
+      return counts;
+    }, {});
+    const ratingLabels = Object.keys(ratingCounts);
+    const ratingData = Object.values(ratingCounts);
+
+    // Chart 2: Critical Rating Chart (bar chart)
+    new Chart(document.getElementById('ratingChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ratingLabels,
+        datasets: [{
+          label: 'Number of Applications',
+          data: ratingData,
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // 3. Prepare data for the Hosting Environment Chart:
+    // Count how many applications are in each hosting environment category.
+    const environmentCounts = data.reduce((counts, app) => {
+      counts[app.hostingEnvironment] = (counts[app.hostingEnvironment] || 0) + 1;
+      return counts;
+    }, {});
+    const environmentLabels = Object.keys(environmentCounts);
+    const environmentData = Object.values(environmentCounts);
+
+    // Chart 3: Hosting Environment Chart (bar chart)
+    new Chart(document.getElementById('environmentChart').getContext('2d'), {
+      type: 'pie',
+      data: {
+        labels: environmentLabels,
+        datasets: [{
+          label: 'Number of Applications',
+          data: environmentData,
+          backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgb(75, 192, 192)',
+                            'rgba(253, 209, 7, 0.2)'
+                            ],
+          borderColor: [
+                'rgb(255, 159, 64)',
+                'rgb(75, 192, 192)',
+                'rgb(253, 209, 7)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+        // Add mouseover tooltips for edit buttons
+        document.querySelectorAll(".edit-btn").forEach(btn => {
+            btn.addEventListener("mouseover", function() {
+                this.setAttribute("title", "Edit Application");
+            });
+        });
+
+        // Add mouseover tooltips for delete buttons
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+            btn.addEventListener("mouseover", function() {
+                this.setAttribute("title", "Delete Application");
+            });
+        });
+
+       
+    } catch (error) {
+        console.error("Error fetching applications:", error);
+        alert("Error fetching applications. Please check your server.");
+    }
+ 
+}
+
+    fetchApplications();
+
+    </script>
+    
+</body>
+</html>

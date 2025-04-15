@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            color: #555;
+        }
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-align: left;
+            width: 50%;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+        }
+            .image-container {
+    background-color: #F4F4F4; /* Background color for the image */
+    display: inline-block; /* So it wraps around the image size */
+    padding: 10px; /* Optional padding */
+}
+
+.image-container img {
+    display: block; /* Avoid inline spacing issues */
+    height: 10vh;
+    width: 15vw;
+}
+#cancel{
+    width: 50%;
+    background-color: #F18C20;
+}
+#cancel:hover {
+            background-color: #EF2929;
+        }
+    </style>
+</head>
+<body>
+<div class="image-container">
+    <img src="img/cal_log2.png" alt="CalBank Logo">
+</div>
+    <h2>Edit Application</h2>
+    <form id="editForm" action="EditServlet" method="POST" >
+            <input type="hidden" name="_method" value="PUT">
+        <label for="app_id">ID:</label>
+        <input type="number" name="id" id="app_id">
+        
+        <label for="app_name">Application/Software Name:</label>
+        <input type="text" id="app_name" name="app_name" required>
+
+        <label for="version_number">Version Number:</label>
+        <input type="text" id="version_number" name="version_number" required>
+
+        <label for="vendor">Vendor/Developer:</label>
+        <input type="text" id="vendor" name="vendor" required>
+
+        <label for="deployment_date">Date of Deployment:</label>
+        <input type="date" id="deployment_date" name="deployment_date" required>
+
+        <label for="owner">Owner/Responsible Unit:</label>
+        <input type="text" id="owner" name="owner" required>
+
+        <label for="database_type">Database Type:</label>
+        <input type="text" id="database_type" name="database_type" required>
+
+        <label for="operating_system">Operating System:</label>
+        <input type="text" id="operating_system" name="operating_system" required>
+
+        <label for="hosting_environment">Hosting Environment:</label>
+        <select id="hosting_environment" name="hosting_environment">
+            <option value="ON_PREMISE">ON_PREMISE</option>
+            <option value="CLOUD">CLOUD</option>
+            <option value="HYBRID">HYBRID</option>
+        </select>
+
+        <label for="purpose">Purpose of the Application:</label>
+        <input type="text" id="purpose" name="purpose" required>
+
+        <label for="critical_rating">Critical Rating:</label>
+        <select id="critical_rating" name="critical_rating">
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="LOW">LOW</option>
+            <option value="CRITICAL">CRITICAL</option>
+        </select>
+
+        <label for="user_base">User Base:</label>
+        <input type="number" id="user_base" name="user_base" required>
+
+        <label for="integrated_apps">Integrated Applications:</label>
+        <input type="text" id="integrated_apps" name="integrated_apps">
+
+        <label for="authentication_method">Authentication Method:</label>
+        <input type="text" id="authentication_method" name="authentication_method" required>
+
+        <label for="data_types">Data Types:</label>
+        <input type="text" id="data_types" name="data_types" required>
+
+        <label for="transaction_volume">Transaction Volume:</label>
+        <input type="text" id="transaction_volume" name="transaction_volume">
+
+        <label for="users">Name of Users:</label>
+        <input type="text" id="users" name="users">
+        
+        
+        <button type="submit">Update Application</button>       
+    </form>
+        <button id="cancel">Cancel</button>
+
+    <script>
+        // Get application ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const appId = urlParams.get('id');
+
+        // Fetch application details and populate form
+        fetch(`http://localhost:8090/MisSoftwareMgt_p1-1.0/api/Applications/${appId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("app_id").value = data.id;
+                document.getElementById("app_name").value = data.appName;
+                document.getElementById("version_number").value = data.versionNumber;
+                document.getElementById("vendor").value = data.vendor;
+                document.getElementById("deployment_date").value = data.deploymentDateFormatted;
+                document.getElementById("owner").value = data.owner;
+                document.getElementById("database_type").value = data.databaseType;
+                document.getElementById("operating_system").value = data.operatingSystem;
+                document.getElementById("hosting_environment").value = data.hostingEnvironment;
+                document.getElementById("purpose").value = data.purpose;
+                document.getElementById("critical_rating").value = data.criticalRating;
+                document.getElementById("user_base").value = data.userBase;
+                document.getElementById("integrated_apps").value = data.integratedApps;
+                document.getElementById("authentication_method").value = data.authenticationMethod;
+                document.getElementById("data_types").value = data.dataTypes;
+                document.getElementById("transaction_volume").value = data.transactionVolume;
+                document.getElementById("users").value = data.users;
+
+
+
+            })
+            .catch(error => console.error("Error fetching application:", error));
+    
+        document.getElementById("cancel").addEventListener("click", function(event){
+            window.location.href = "crud.html";
+    });
+    </script>
+
+</body>
+</html>

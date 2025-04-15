@@ -1,0 +1,12 @@
+com/software/management/missoftwaremgt_p1/resources/JakartaEE11Resource.class
+com/software/management/missoftwaremgt_p1/JakartaRestConfiguration.class
+api/Applications$CriticalRating.class
+api/Servlets.class
+api/ExportCSVServlet.class
+api/Applications$HostingEnvironment.class
+api/Applications.class
+api/EditServlet.class
+api/ApplicationServlet.class
+api/service/ApplicationsRESTFacade.class
+api/service/AbstractFacade.class
+api/ExportExcelServlet.class

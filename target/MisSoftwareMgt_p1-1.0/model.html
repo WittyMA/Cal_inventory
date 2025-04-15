@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        #chartContainer {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Application Management</h2>
+
+<!-- Table of Applications -->
+<div class="table-responsive">
+    <table id="applicationsTable" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>App Name</th>
+                <th>Version No</th>
+                <th>Vendor</th>
+                <th>Deployment Date</th>
+                <th>Owner</th>
+                <th>Database Type</th>
+                <th>Operating System</th>
+                <th>Hosting Env</th>
+                <th>Purpose</th>
+                <th>Critical Rating</th>
+                <th>User Base</th>
+                <th>Integrated Apps</th>
+                <th>Auth Method</th>
+                <th>Data Types</th>
+                <th>Transaction Volume</th>
+                <th>Users</th>
+                <th>Date Created</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- Chart Container -->
+<div id="chartContainer">
+    <canvas id="appChart"></canvas>
+</div>
+
+<script>
+    const apiBaseUrl = "api/Applications";
+
+    async function fetchApplications() {
+        try {
+            const response = await fetch(apiBaseUrl);
+            if (!response.ok) {
+                throw new Error("Failed to fetch applications.");
+            }
+
+            const data = await response.json();
+
+            // Populate table
+            const tableBody = document.querySelector("#applicationsTable tbody");
+            tableBody.innerHTML = ""; 
+
+            data.forEach(app => {
+                const row = `
+                    <tr><td>${app.id}</td>
+                    <td>${app.appName}</td>
+                    <td>${app.versionNumber}</td>
+                    <td>${app.vendor}</td>
+                    <td>${app.deploymentDateFormatted}</td>
+                    <td>${app.owner}</td>
+                    <td>${app.databaseType}</td>
+                    <td>${app.operatingSystem}</td>
+                    <td>${app.hostingEnvironment}</td>
+                    <td>${app.purpose}</td>
+                    <td>${app.criticalRating}</td>
+                    <td>${app.userBase}</td>
+                    <td>${app.integratedApps}</td>
+                    <td>${app.authenticationMethod}</td>
+                    <td>${app.dataTypes}</td>
+                    <td>${app.transactionVolume}</td>
+                    <td>${app.users}</td>
+                    <td>${app.createdAtFormatted}</td>
+                    </tr>`;
+                tableBody.insertAdjacentHTML("beforeend", row);
+            });
+
+            // Prepare data for the chart
+            const chartLabels = data.map(app => app.appName);
+            const chartData = data.map(app => parseInt(app.userBase) || 0);
+
+            // Render Chart
+            const ctx = document.getElementById('appChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'User Base',
+                        data: chartData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error("Error fetching applications:", error);
+            alert("Error fetching applications. Please check your server.");
+        }
+    }
+
+    // Initial fetch
+    fetchApplications();
+</script>
+
+</body>
+</html>
